@@ -125,4 +125,6 @@ screen -X -S streamlit_session quit
 Uma screen pode ser utilizada nesse projeto para deixar o código do Streamlit executando em um console virtual e uma outra screen para a execução da API.
 
 #### Para iniciar a API
+```commandline
 uvicorn main:api --reload
+```
