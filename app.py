@@ -32,8 +32,10 @@ data_analyses_on = st.toggle('Exibir análise dos dados')
 # Se foi selecionado para apresentar os dados, apresenta o dataframe, um histograma de idades e a quantidade de registros com e sem doença.
 if data_analyses_on:
 
+    # Apresenta o dataframe
     st.dataframe(dados)
 
+    # Apresentar um histograma de idades
     st.header("Histograma - Idade")
     fig = plt.figure()
     plt.hist(dados['age'], bins=30)
@@ -41,6 +43,7 @@ if data_analyses_on:
     plt.ylabel("Quantidade")
     st.pyplot(fig)
 
+    # Gerar gráfico com a quantidade de registros de diagnósticos sem doença(1) e com doença(2).
     st.header("Diagnóstico de doença cardíaca (diagnóstico angiográfico)")
     st.bar_chart(dados.target.value_counts())
 
@@ -129,7 +132,7 @@ paciente = {}
 
 # Verificar se o botão de fazer a predição foi pressionado ou se o campo 'target' está em cache
 if submit or 'target' in st.session_state:
-    # Alimentar o objeto do paciente
+    # Alimentar o objeto do paciente com os dados que precisamos
     paciente = {
         'age': age,
         'sex': sex,
@@ -165,11 +168,13 @@ if submit or 'target' in st.session_state:
 
         # Resultado: 1 = no disease | 2 = disease
         if disease == 1:
-            st.subheader("Paciente não tem problemas cardíacos.")
+            # Caso o paciente não apresentar ter problemas cardíacos, apresenta uma mensagem positiva!
+            st.subheader("Paciente não tem problemas cardíacos! 👏🎉🎆")
             if 'target' not in st.session_state:
                 st.balloons()
         else:
-            st.subheader("Detectado problema cardíaco")
+            # Caso o paciente apresente ter problemas cardíacos, apresenta uma mensagem triste!
+            st.subheader("Infelizmente foi detectado problema cardíaco, seria adequado buscar orientação médica. 😢😟🥺")
             if 'target' not in st.session_state:
                 st.snow()
 
@@ -182,45 +187,60 @@ if submit or 'target' in st.session_state:
 
         col1, col2, col3 = st.columns([1,1,5])
         with col1:
+            # Botão para feedback de predição correta
             correct_prediction = st.button("👍")
         with col2:
+            # Botão para feedback de predição incorreta
             wrong_prediction = st.button("👎")
 
+        # Caso o usuário der um feedback da precisão, vamos agradecer e armazenar a predição no arquivo local JSON
         if correct_prediction or wrong_prediction:
             message = "Muito obrigado pelo seu feedback. "
+
             if wrong_prediction:
                 message += "Iremos utilizar esses dados para melhorar nosso modelo."
 
+            # Armazenar a informação se a predição foi correta ou não, para futuro uso de apresentação de dados.
             if correct_prediction:
                 paciente['CorrectPrediction'] = True
             elif wrong_prediction:
                 paciente['CorrectPrediction'] = False
 
+            # Armazenar a predição no objeto do paciente
             paciente['target'] = st.session_state['target']
+            
+            # Apresentar a mensagem para o usuário
             st.write(message)
 
-            # Salvar predição
+            # Salvar predição no arquivo JSON via requisição POST para nossa API
             response = requests.post(f"{API_URL}/save-prediction", json=json.dumps(paciente))
+
+            # Se o código da resposta da API for diferente de 200, apresenta mensagem de erro e da exceção 
             if response.status_code != 200:
                 msg = f"Falha ao salvar a predição: {response.status_code}"
                 print(msg)
                 raise Exception(msg)
 
-
+    # Caso foi feita uma predição, apresentamos um botão para iniciar uma nova análise
     col1, col2, col3 = st.columns(3)
 
     with col2:
         new_test = st.button("Iniciar nova análise")
 
+        # Se pressionou o botão de nova análise e tem dados em cache de predição, vai limpar
         if new_test and 'target' in st.session_state:
+            # Limpar dados da sessão
             del st.session_state['target']
             st.rerun()
 
+# Botão apresentar os dados de acurácia
 accuracy_prediction_on = st.toggle("Exibir acurácia")
 
 if accuracy_prediction_on:
-    # Recuperar as predições
+    # Recuperar as predições salvas em nosso arquivo JSON via requisição GET para a API
     response = requests.get(f"{API_URL}/get-all-predictions")
+    
+    # Se o código da resposta da API for diferente de 200, apresenta mensagem de erro e da exceção 
     if response.status_code != 200:
         msg = f"Falha ao recuperar as predições: {response.status_code}"
         print(msg)
@@ -228,10 +248,13 @@ if accuracy_prediction_on:
 
     predictions = response.json()
 
+    # Inicializar as variáveis para calcular a acurácia
     num_total_predictions = len(predictions)
     correct_predictions = 0
     total = 0
     accuracy_hist = []
+
+    # Para cada predição vamos fazer o cálculo para gerar um histórico de acurácia e salvando o número de predições corretas
     for index, paciente in enumerate(predictions):
         
         total = total + 1
@@ -239,12 +262,17 @@ if accuracy_prediction_on:
             correct_predictions += 1
 
         temp_accuracy = correct_predictions / total if total else 0
+
+        # Adiciona a acurácia calculada para o array de histórico
         accuracy_hist.append(round(temp_accuracy, 2))
 
+    # Calcular a acurácia geral das predições
     accuracy = correct_predictions / num_total_predictions if num_total_predictions else 0
 
+    # Apresentar mética no layout
     st.metric("Acurácia", round(accuracy, 2))
 
+    # Apresentar o gráfico de histórico de acurácia
     st.subheader("Histórico de acurácia")
     st.line_chart(accuracy_hist)
 
