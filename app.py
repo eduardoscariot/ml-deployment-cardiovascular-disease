@@ -2,6 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 import requests
+import util
 import json
 import sys
 
@@ -9,8 +10,8 @@ import sys
 API_URL = "http://127.0.0.1:8000"
 
 # Verificar senha de acesso
-#if not util.check_password():
-#    st.stop()  # Se tiver incorreta, não permite prosseguir na aplicação.
+if not util.check_password():
+    st.stop()  # Se tiver incorreta, não permite prosseguir na aplicação.
 
 # Recuperar os dados via API - Diagnóstico de Doenças Cardiovasculares
 response = requests.get(f"{API_URL}/get-dataset")
