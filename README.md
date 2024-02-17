@@ -1,7 +1,6 @@
 ## Descrição geral do projeto
 
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original-wordmark.svg" width="40" height="60" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/streamlit/streamlit-plain-wordmark.svg" width="60" height="60" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original-wordmark.svg" width="40" height="60" /><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/streamlit/streamlit-plain-wordmark.svg" width="60" height="60" />
                
 Este projeto visa realizar a **implantação de um modelo de ML** em produção, ou seja, em um servidor dedicado que poderá responder solicitações de usuários na internet por meio de um web browser. O projeto foi desenvolvido na **Pós Graduação de Big Data e Data Science da Unochapecó**, sob orientação do professor [Felipe de Morais](https://github.com/felipmorais).
 
@@ -22,8 +21,7 @@ python3 -m venv venv
 #### Ativar o ambiente virtual
 Após a criação do ambiente, precisamos ativar(entrar) no ambiente virtual. Atenção, a ativação do ambiente virtual é diferente entre os ambiente MacOS/Linux e Windows.
 
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" width="40" height="40"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/apple/apple-original.svg" width="40" height="40"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" width="40" height="40"/><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/apple/apple-original.svg" width="40" height="40"/>
 
 ```commandline
 source venv/bin/activate
